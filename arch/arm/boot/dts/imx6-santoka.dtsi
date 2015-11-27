@@ -1,0 +1,136 @@
+
+&tempmon{
+	cpu-type-gpio = <&gpio2 3 0>, <&gpio2 4 0>;
+	cpu-type-mapping = <0x2 0x3 0x1 0x0>;			/* Pattern for Consumer, Ext Consumer, Industrial, Automotive */
+	pinctrl-names = "default";
+	pinctrl-0 = <&pinctrl_pfid_3_4>;
+};
+
+&reg_usb_otg_vbus{
+	gpio = <&gpio3 22 0>;
+	pinctrl-0 = <&pinctrl_usb_otg_vbus_2>;
+};
+
+&regulators{
+	reg_usb_h3_vbus: usb_h3_vbus {
+		 compatible = "regulator-fixed";
+		 regulator-name = "usb_h3_vbus";
+		 regulator-min-microvolt = <5000000>;
+		 regulator-max-microvolt = <5000000>;
+		 vin-supply = <&supply_5P0 &supply_sw4_3V3> ;
+		 regulator-always-on;
+	 };
+};
+
+&gpio3{
+	gpio-default-label = "gpio-%d";
+	gpio-label-26 = "wlan_reset";
+	gpio-label-27 = "wlan_powerdown";
+};
+&gpio4{
+	gpio-label-24 = "keypad_vcc";
+	gpio-label-25 = "usb_pct_enable";
+};
+
+&gpioexport{
+		gpio-grp-keypad_fixed_in_santaro{
+			status = "disabled";
+		};
+		gpio-grp-keypad_fixed_in_santoka{
+			pinctrl-names = "default";
+			pinctrl-0 = <&pinctrl_gpio_export_gpio_fixed_in_santoka>;
+
+			direction-not-changeable;
+			direction-input;
+			
+			/* Sysfs kp gpios with changeable direction */
+			gpios =	
+					<&gpio4 31 1>;	/* CLEAR_ALL */
+
+			status = "okay";
+		};
+		gpio-grp-keypad_fixed_out_santaro{
+			status = "disabled";
+		};
+		gpio-grp-keypad_fixed_out_santoka{
+			pinctrl-names = "default";
+			pinctrl-0 = <&pinctrl_gpio_export_gpio_fixed_out_santoka>;
+
+			direction-not-changeable;
+			direction-output;
+			
+			/* Sysfs kp gpios with changeable direction */
+			gpios =	
+					<&gpio4 24 3>,	/*  KP5V */
+                    <&gpio5 18 2>;  /*  LED1 */
+
+			status = "okay";
+		};
+
+		gpio-grp-wlan-ctrl{
+			pinctrl-names = "default";
+			pinctrl-0 = <&pinctrl_gpio_export_wlan_ctrl>;
+
+			direction-output;
+
+			gpios =	
+					<&gpio3 26 3>,	/* WLAN RESET */
+					<&gpio3 27 3>;	/* WLAN PD */
+
+			status = "okay"; 
+		};
+		gpio-grp-usb-pct-ctrl{
+			pinctrl-names = "default";
+			pinctrl-0 = <&pinctrl_gpio_export_usb_ctrl>;
+
+			direction-output;
+			gpios =	<&gpio4 25 0>;	/* USB PCT EN */
+
+			status = "okay"; 
+		};
+};
+
+&weim {	
+	status = "disabled";
+};
+
+&sram{
+	status = "disabled";
+};
+	
+&uart2 {
+	pinctrl-names = "default";
+	pinctrl-0 = <&pinctrl_uart2_2>;
+	status = "okay";
+};
+
+&uart4 {
+	status = "disabled";
+};
+
+&usbh3 {
+	vbus-supply = <&reg_usb_h3_vbus>;
+	osc-clkgate-delay = <0x3>;
+
+	pinctrl-names = "idle", "active";
+	pinctrl-0 = <&pinctrl_usbh3_1>;
+	pinctrl-1 = <&pinctrl_usbh3_active_1>;
+
+	status = "okay";
+};
+
+/* wlan sdio */
+&usdhc3 {
+	pinctrl-names = "default";
+	pinctrl-0 = <&pinctrl_usdhc3_2>;
+	no-1-8-v;
+	keep-power-in-suspend;
+	enable-sdio-wakeup;
+
+	status = "okay";
+};
+
+&flexcan2 {
+	pinctrl-0 = <&pinctrl_flexcan2_1>;
+};
+

@@ -1,0 +1,844 @@
+/*
+ * Copyright (C) 2015 Garz & Fricke GmbH
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License version 2 as
+ * published by the Free Software Foundation.
+ */
+
+/dts-v1/;
+
+#include "imx6_guf_q.dtsi"
+
+/ {
+	model = "SDC-CSPU";
+	compatible = "guf,imx6q-sdc-cspu","guf,imx6q-santaro", "fsl,imx6q";
+
+	hw_revision_fixup: hw_revision_fixup{
+		/* Availble revisions with major and minor, first revision 
+		   is the default where the devicetree works without any changes */
+		revisions = <1 0
+					 1 1
+					 >;
+	};
+
+
+
+	aliases {
+		serial0 = &uart2;
+		serial1 = &uart1;
+		serial2 = &uart4;
+		serial3 = &uart5;
+
+		spi0 = &ecspi1;
+		spi1 = &ecspi2;
+
+	};
+
+	memory {
+		reg = <0x10000000 0x40000000>;
+	};
+
+	leds {
+		compatible = "gpio-leds";
+	};
+
+	gpioexport:gpio-export{
+		compatible = "gpio-of-export";
+
+	};
+
+	regulators {
+		compatible = "simple-bus";
+
+		supply_12P: 12P_supply {
+			compatible = "regulator-fixed";
+			regulator-name = "12P";
+			regulator-min-microvolt = <12000000>;
+			regulator-max-microvolt = <12000000>;
+			regulator-always-on;
+		};
+		supply_5P0: 5P0_supply {
+			compatible = "regulator-fixed";
+			regulator-name = "5P0";
+			regulator-min-microvolt = <5000000>;
+			regulator-max-microvolt = <5000000>;
+			regulator-always-on;
+			vin-supply = <&supply_12P>;
+		};
+		supply_SYS_4V2: SYS_4V2_supply {
+			compatible = "regulator-fixed";
+			regulator-name = "SYS_4V2";
+			regulator-min-microvolt = <4200000>;
+			regulator-max-microvolt = <4200000>;
+			regulator-always-on;
+			vin-supply = <&supply_12P>;
+		};
+
+		supply_5P0_can_rs485: can_rs485_supply {
+			compatible = "regulator-fixed";
+			regulator-name = "5P0_CAN_RS485";
+			regulator-min-microvolt = <5000000>;
+			regulator-max-microvolt = <5000000>;
+			regulator-always-on;
+
+			vin-supply = <&supply_5P0>;
+		};
+
+		reg_usb_h2_vbus: usb_h2_vbus {
+			compatible = "regulator-fixed";
+			regulator-name = "usb_h2_vbus";
+			regulator-min-microvolt = <5000000>;
+			regulator-max-microvolt = <5000000>;
+			vin-supply = <&supply_5P0> ;
+			regulator-always-on;
+		};
+
+		supply_VSNVS_3V0: VSNVS_3V0_supply {
+			compatible = "regulator-fixed";
+			regulator-name = "VSNVS_3V0";
+			regulator-min-microvolt = <3000000>;
+			regulator-max-microvolt = <3000000>;
+			regulator-always-on;
+			vin-supply = <&supply_SYS_4V2>;
+		};
+
+	};
+};
+&anatop_vdd1p1{
+		vin-supply = <&supply_VSNVS_3V0>;
+};
+&anatop_vdd3p0{
+		vin-supply = <&reg_usb_h2_vbus>;
+};
+&anatop_vdd2p5{
+		vin-supply = <&supply_VSNVS_3V0>;
+};
+
+&gpio1{
+	gpio-default-label = "gpio-%d";
+	gpio-label-10 = "cfs_01";
+	gpio-label-11 = "cfs_02";
+	gpio-label-12 = "cfs_03";
+	gpio-label-13 = "cfs_04";
+	gpio-label-14 = "cfs_05";
+	gpio-label-15 = "cfs_06";
+	gpio-label-16 = "cfs_07";
+	gpio-label-17 = "cfs_08";
+};
+&gpio4{
+	gpio-default-label = "gpio-%d";
+	gpio-label-16 = "gnss1_reset_b";
+	gpio-label-17 = "gnss2_reset_b";
+	gpio-label-18 = "gyro_reset_b";
+	gpio-label-19 = "hmu_mode";
+	gpio-label-20 = "hmu_pwr";
+	gpio-label-21 = "hmu_pwr_fault_b";
+	gpio-label-22 = "gnss1_1pps";
+	gpio-label-23 = "gnss2_1pps";
+	gpio-label-24 = "discrete_in1";
+	gpio-label-25 = "discrete_in2";
+	gpio-label-26 = "gnss1_pwr_ok";
+	gpio-label-27 = "gnss2_pwr_ok";
+	gpio-label-28 = "gnss1_ant_ok";
+	gpio-label-30 = "pfo_5p0";
+	gpio-label-31 = "clear_all";
+};
+
+&gpio5{
+	gpio-default-label = "gpio-%d";
+	gpio-label-5 = "magn_pwr_ok";
+	gpio-label-6 = "gyro_pwr_ok";
+	gpio-label-7 = "sbx4_pwr_ok";
+	gpio-label-8 = "sbx4_ant_ok";
+	gpio-label-9 = "mfg_id";
+	gpio-label-14 = "rot_5p0_ok";
+	gpio-label-15 = "rot_12p0_ok";
+	gpio-label-16 = "rot_12n0_ok";
+	gpio-label-18 = "led_uc1";
+	gpio-label-19 = "led_uc2";
+	gpio-label-20 = "relay_heading_ok";
+	gpio-label-21 = "relay_fault";
+	gpio-label-22 = "relay_spare1";
+	gpio-label-23 = "relay_spare2";
+	gpio-label-24 = "i2c3_txled_b";
+	gpio-label-25 = "i2c3_rxled_b";
+	gpio-label-28 = "sbx4_reset_b";
+	gpio-label-29 = "sbx4_lock";
+};
+
+&gpio7{
+	gpio-default-label = "gpio-%d";
+	gpio-label-7 = "keypad_vcc";
+};
+
+&gpioexport{
+		/* Third gpio option are the flags, with custom meaning. */
+		/*   bit 1   act-low	*/
+		/*   bit 2   init high	*/
+
+		gpio-grp-keypad_fixed_in{
+			pinctrl-names = "default";
+			pinctrl-0 = <&pinctrl_gpio_export_gpio_fixed_in>;
+
+			direction-not-changeable;
+			direction-input;
+			
+			gpios =	
+					<&gpio1 10 1>,		/*  CFS_01 */
+					<&gpio1 11 1>,		/*  CFS_02 */
+					<&gpio1 12 1>,		/*  CFS_03 */
+					<&gpio1 13 1>,		/*  CFS_04 */
+					<&gpio1 14 1>,		/*  CFS_05 */
+					<&gpio1 15 1>,		/*  CFS_06 */
+					<&gpio1 16 1>,		/*  CFS_07 */
+					<&gpio1 17 1>,		/*  CFS_08 */
+
+					<&gpio4 19 0>,		/*  HMU_MODE */
+					<&gpio4 21 1>,		/*  HMU_PWR_FAULT_B */
+
+					<&gpio4 22 0>,		/*  GNSS1_1PPS */
+					<&gpio4 23 0>,		/*  GNSS2_1PPS */
+					<&gpio4 24 1>,		/*  DISCRETE_IN1 */
+					<&gpio4 25 1>,		/*  DISCRETE_IN2 */
+					<&gpio4 26 1>,		/*  GNSS1_PWR_OK */
+					<&gpio4 27 0>,		/*  GNSS2_PWR_OK */
+					<&gpio4 28 1>,		/*  GNSS1_ANT_OK */
+					<&gpio4 30 0>,		/*  PFO_5P0 */
+
+					<&gpio5  5 0>,		/*  MAGN_PWR_OK */
+					<&gpio5  6 0>,		/*  GYRO_PWR_OK */
+					<&gpio5  7 1>,		/*  SBX4_PWR_OK */
+					<&gpio5  8 1>,		/*  SBX4_ANT_OK */
+					<&gpio5 14 1>,		/*  ROT_5P0_OK */
+					<&gpio5 15 1>,		/*  ROT_12P0_OK */
+					<&gpio5 16 1>,		/*  ROT_12N0_OK */
+
+					<&gpio5 29 0>,		/*  SBX4_LOCK */
+					<&gpio4 31 1>;		/*  CLEAR_ALL */
+
+			status = "okay";
+		};
+
+		gpio-grp-keypad_fixed_out{
+			pinctrl-names = "default";
+			pinctrl-0 = <&pinctrl_gpio_export_gpio_fixed_out>;
+
+			direction-not-changeable;
+			direction-output;
+			
+			/* Sysfs with changeable direction */
+			gpios =	
+					<&gpio4 16 3>,		/*  GNSS1_RESET_B */
+					<&gpio4 17 3>,		/*  GNSS2_RESET_B */
+					<&gpio4 18 1>,		/*  GYRO_RESET_B */
+
+					<&gpio4 20 0>,		/*  HMU_PWR */
+
+					<&gpio5 18 2>,		/*  LED_UC1 */
+					<&gpio5 19 2>,		/*  LED_UC2 */
+					<&gpio5 20 0>,		/*  RELAY_HEADING_OK */
+					<&gpio5 21 0>,		/*  RELAY_FAULT */
+					<&gpio5 22 0>,		/*  RELAY_SPARE1 */
+					<&gpio5 23 0>,		/*  RELAY_SPARE2 */
+					<&gpio5 24 3>,		/*  I2C3_TXLED_B */
+					<&gpio5 25 3>,		/*  I2C3_RXLED_B */
+					<&gpio5 28 3>;		/*  SBX4_RESET_B */
+
+			status = "okay";
+		};
+};
+
+
+&sdma{
+	iram = <&ocram>;
+};
+
+&cpu0 {
+	arm-supply = <&pmic_sw1a_vddcore>;
+	soc-supply = <&pmic_sw1c_vddsoc>;
+	pu-supply = <&pu_dummy>; /* use pu_dummy if VDDSOC share with VDDPU */
+};
+
+&ecspi1 {
+	fsl,spi-num-chipselects = <3>;
+	cs-gpios = 
+		<&gpio4 9 0>,
+		<&gpio4 10 0>,
+		<&gpio4 11 0>;
+	pinctrl-names = "default";
+	pinctrl-0 = <&pinctrl_ecspi1_3>;
+	status = "okay";
+
+	gyro_x@0x00 {
+		reg = <0>;
+		compatible = "spidev";
+		spi-max-frequency = <1000000>;
+	};
+	gyro_y@0x01 {
+		reg = <1>;
+		compatible = "spidev";
+		spi-max-frequency = <1000000>;
+	};
+	gyro_z@0x02 {
+		reg = <2>;
+		compatible = "spidev";
+		spi-max-frequency = <1000000>;
+	};
+};
+
+&ecspi2 {
+	fsl,spi-num-chipselects = <1>;
+	cs-gpios = 
+		<&gpio5 12 0>;
+	pinctrl-names = "default";
+	pinctrl-0 = <&pinctrl_ecspi2_1>;
+	status = "okay";
+
+    rot: rot@0x00 {
+		reg = <0>;
+		compatible = "ltc1655";
+		spi-max-frequency = <1000000>;
+
+		/* Just to read, configuration has to be done somewhere else */
+		state-gpio = 
+			<&gpio5 14 1>,		/*  ROT_5P0_OK */
+			<&gpio5 15 1>,		/*  ROT_12P0_OK */
+			<&gpio5 16 1>;		/*  ROT_12N0_OK */
+
+	};
+};
+
+/* Since HW Version 1.1 there is an enable gpio available for the ROT DAC */
+&hw_revision_fixup {
+	rot_ltc1655_hw_1_1 {
+		overwrite = < 1 1 &rot>;   /* <   major minor node */
+		enable-gpio = <&gpio5 17 1>; /*  ROT_EN */
+	};
+};
+
+&fec {
+	pinctrl-names = "default";
+	pinctrl-0 = <&pinctrl_enet_4>;
+	phy-mode = "rmii";
+	status = "okay";
+	local-mac-address = [00 07 8E 14 72 F8]; 
+	phy-supply = <&supply_sw4_3V3>;
+};
+
+&pcie {
+	status = "okay";
+	reset-gpio = <&gpio7 12 0>;
+
+	pinctrl-names = "default";
+	pinctrl-0 = <&pinctrl_pcie>;
+};
+
+&gpc {
+	fsl,cpu_pupscr_sw2iso = <0xf>;
+	fsl,cpu_pupscr_sw = <0xf>;
+	fsl,cpu_pdnscr_iso2sw = <0x1>;
+	fsl,cpu_pdnscr_iso = <0x1>;
+	fsl,ldo-bypass = <1>; /* use ldo-bypass, */
+	fsl,wdog-reset = <1>; /* watchdog select of reset source */
+	fsl,wdog-reset-srs = <0>; /* watchdog triggers the software reset */
+	fsl,wdog-reset-wdog-b = <1>; /* watchdog triggers the external wdog reset */
+	pu-supply = <&pu_dummy>; /* ldo-bypass:use pu_dummy if VDDSOC share with VDDPU */
+};
+
+&pu_dummy {
+		regulator-always-on;
+};
+&sdma{
+		fsl,sdma-ram-script-name = "imx/sdma/sdma-imx6q-to1.bin";
+};
+
+&i2c1 {
+	clock-frequency = <400000>;
+	pinctrl-names = "default", "gpio";
+	pinctrl-0 = <&pinctrl_i2c1_2>;
+    pinctrl-1 = <&pinctrl_i2c1_2_gpio>;
+	status = "okay";
+
+	gpio-scl = <&gpio5 26 0>;
+	gpio-sda = <&gpio5 27 0>;
+
+	rtc: rtcpcf8563@51 {
+		compatible = "nxp,pcf8563";
+		reg = <0x51>;
+
+		pinctrl-names = "default";
+		pinctrl-0 = <&pinctrl_rtc>;
+
+		interrupts = <29 0x4>; 
+		interrupt-parent = <&gpio4>;
+	};
+
+	eeprom: eeprom@50 {
+			compatible = "guf,gfeeprom";
+			reg = <0x50>;
+			pagesize = <32>;
+			bytelen = <4096>;
+			bus-id = <0>;
+			flags = <0x80>;		/* AT24_FLAG_ADDR16 */
+	   };
+
+	pmic: pfuze100@08 {
+		compatible = "fsl,pfuze100";
+		reg = <0x08>;
+
+		pinctrl-names = "default";
+		pinctrl-0 = <&pinctrl_pmic_1>;
+
+		interrupts = <13 0x4>; 
+		interrupt-parent = <&gpio7>;
+
+		regulators {
+			pmic_sw1a_vddcore: sw1ab {
+				regulator-name = "VDD_CORE (sw1a)";
+				regulator-min-microvolt = <300000>;
+				regulator-max-microvolt = <1875000>;
+				regulator-boot-on;
+				regulator-always-on;
+				regulator-ramp-delay = <6250>;
+
+				default-voltage = <1300000>;
+				
+				vin-supply = <&supply_SYS_4V2>;
+			};
+
+			pmic_sw1c_vddsoc: sw1c {
+				regulator-name = "VDD_SOC (sw1c)";
+				regulator-min-microvolt = <300000>;
+				regulator-max-microvolt = <1875000>;
+				regulator-boot-on;
+				regulator-always-on;
+				regulator-ramp-delay = <6250>;
+
+				default-voltage = <1300000>;
+
+				vin-supply = <&supply_SYS_4V2>;
+			};
+
+			supply_sw4_3V3: sw2 {
+				regulator-name = "SW4_3V3 (sw2)";
+				regulator-min-microvolt = <3300000>;
+				regulator-max-microvolt = <3300000>;
+				regulator-boot-on;
+				regulator-always-on;
+
+				default-voltage = <3300000>;
+				vin-supply = <&supply_SYS_4V2>;
+			};
+
+			sw3a_reg: sw3a {
+				regulator-name = "DDR_1V5 (sw3a)";
+				regulator-min-microvolt = <400000>;
+				regulator-max-microvolt = <1975000>;
+				regulator-boot-on;
+				regulator-always-on;
+
+				default-voltage = <1500000>;
+				vin-supply = <&supply_SYS_4V2>;
+			};
+
+			supply_DDR_1V5: sw3b {
+				regulator-name = "DDR_1V5 (sw3b)";
+				regulator-min-microvolt = <400000>;
+				regulator-max-microvolt = <1975000>;
+				regulator-boot-on;
+				regulator-always-on;
+
+				default-voltage = <1500000>;
+				vin-supply = <&supply_SYS_4V2>;
+			};
+
+			supply_AUX_3V15: sw4 {
+				regulator-name = "AUX 3V15 (sw4)";
+				regulator-min-microvolt = <800000>;
+				regulator-max-microvolt = <3300000>;
+
+				default-voltage = <3150000>;
+
+				vin-supply = <&supply_SYS_4V2>;
+			};
+
+			swbst_reg: swbst {
+				status = "disabled";
+				regulator-min-microvolt = <5000000>;
+				regulator-max-microvolt = <5150000>;
+				regulator-boot-on;
+				regulator-always-on;
+
+				default-voltage = <5000000>;
+			};
+
+			snvs_reg: vsnvs {
+				regulator-min-microvolt = <1200000>;
+				regulator-max-microvolt = <3000000>;
+				regulator-boot-on;
+				regulator-always-on;
+
+				default-voltage = <3000000>;
+				vin-supply = <&supply_SYS_4V2>;
+			};
+
+			vref_reg: vrefddr {
+				regulator-boot-on;
+				regulator-always-on;
+
+				default-voltage = <750000>;
+				vin-supply = <&supply_DDR_1V5>;
+			};
+
+			vgen1_reg: vgen1 {
+				regulator-min-microvolt = <800000>;
+				regulator-max-microvolt = <1550000>;
+				regulator-always-on;
+
+				default-voltage = <1500000>;
+				vin-supply = <&supply_AUX_3V15>;
+			};
+
+			vgen2_reg: vgen2 {
+				regulator-min-microvolt = <800000>;
+				regulator-max-microvolt = <1550000>;
+				regulator-always-on;
+
+				default-voltage = <1200000>;
+				vin-supply = <&supply_AUX_3V15>;
+			};
+
+			vgen3_reg: vgen3 {
+				regulator-min-microvolt = <1800000>;
+				regulator-max-microvolt = <3300000>;
+				regulator-always-on;
+
+				default-voltage = <2500000>;
+				vin-supply = <&supply_sw4_3V3>;
+			};
+
+			vgen4_reg: vgen4 {
+				regulator-min-microvolt = <1800000>;
+				regulator-max-microvolt = <3300000>;
+				regulator-always-on;
+				regulator-boot-on;
+
+				default-voltage = <1800000>;
+				vin-supply = <&supply_sw4_3V3>;
+			};
+
+			vgen5_reg: vgen5 {
+				regulator-min-microvolt = <1800000>;
+				regulator-max-microvolt = <3300000>;
+				regulator-always-on;
+				regulator-boot-on;
+
+				default-voltage = <2800000>;
+				vin-supply = <&supply_SYS_4V2>;
+			};
+
+			vgen6_reg: vgen6 {
+				regulator-min-microvolt = <1800000>;
+				regulator-max-microvolt = <3300000>;
+				regulator-always-on;
+
+				default-voltage = <2800000>;
+				vin-supply = <&supply_SYS_4V2>;
+			};
+		};
+	};
+
+};
+
+&i2c3 {
+	clock-frequency = <400000>;
+	pinctrl-names = "default", "gpio";
+	pinctrl-0 = <&pinctrl_i2c3_5>;
+	pinctrl-1 = <&pinctrl_i2c3_5_gpio>;
+	status = "okay";
+
+	gpio-scl = <&gpio1 5 0>;
+	gpio-sda = <&gpio1 6 0>;
+	
+};
+
+&wdog1 {
+
+	fsl,default-timeout = <60>;	/* Default timeout on seconds */
+	fsl,reset-wdog-b = <1>;		/* watchdog triggers the external wdog reset */
+
+	pinctrl-names = "default";
+	pinctrl-0 = <&pinctrl_wdog1_1>;
+};
+
+&uart1 {
+	pinctrl-names = "default";
+	pinctrl-0 = <&pinctrl_uart1_3>;
+	status = "okay";
+};
+&uart2 {
+	pinctrl-names = "default";
+	pinctrl-0 = <&pinctrl_uart2_3>;
+	status = "okay";
+};
+&uart4 {
+	pinctrl-names = "default";
+	pinctrl-0 = <&pinctrl_uart4_3>;
+	status = "okay";
+};
+&uart5 {
+	pinctrl-names = "default";
+	pinctrl-0 = <&pinctrl_uart5_4>;
+	status = "okay";
+};
+
+&usbh2 {
+	vbus-supply = <&reg_usb_h2_vbus>;
+	osc-clkgate-delay = <0x3>;
+
+	pinctrl-names = "idle", "active";
+	pinctrl-0 = <&pinctrl_usbh2_3>;
+	pinctrl-1 = <&pinctrl_usbh2_active_3>;
+
+	status = "okay";
+};
+
+/* emmc */
+&usdhc4 {
+	pinctrl-names = "default";
+	pinctrl-0 = <&pinctrl_usdhc4_1>;
+	bus-width = <8>;
+	non-removable;
+	no-1-8-v;
+	keep-power-in-suspend;
+
+	vmmc-supply = <&supply_sw4_3V3>;
+
+	status = "okay";
+};
+
+&flexcan1 {
+	pinctrl-names = "default";
+	pinctrl-0 = <&pinctrl_flexcan1_3>;
+	status = "okay";
+	
+	xceiver-supply = <&supply_5P0_can_rs485>;
+};
+
+&flexcan2 {
+	pinctrl-names = "default";
+	pinctrl-0 = <&pinctrl_flexcan2_2>;
+	status = "okay";
+	
+	xceiver-supply = <&supply_5P0_can_rs485>;
+};
+
+&iomuxc {
+
+	wdog1{
+		pinctrl_wdog1_1: wdoggrp-1 {
+			fsl,pins = <
+				MX6QDL_PAD_GPIO_9__WDOG1_B 0x80000000
+				>;
+			};
+	};
+
+	pmic{
+		pinctrl_pmic_1: pmic_grp-1 {
+			fsl,pins = <
+				MX6QDL_PAD_GPIO_18__GPIO7_IO13 0x80000000	/* PMIC_INT_B */
+				>;
+			};
+	};
+
+	pfid{
+		pinctrl_pfid: pfid_grp{
+			fsl,pins = <
+				MX6QDL_PAD_NANDF_D0__GPIO2_IO00		0x80000000		/*  PFID0 *	/
+				MX6QDL_PAD_NANDF_D1__GPIO2_IO01		0x80000000		/*  PFID1 *	/
+				MX6QDL_PAD_NANDF_D2__GPIO2_IO02		0x80000000		/*  PFID2 *	/
+				MX6QDL_PAD_NANDF_D3__GPIO2_IO03		0x80000000		/*  PFID3 *	/
+				MX6QDL_PAD_NANDF_D4__GPIO2_IO04		0x80000000		/*  PFID4 *	/
+				MX6QDL_PAD_NANDF_D5__GPIO2_IO05		0x80000000		/*  PFID5 *	/
+				MX6QDL_PAD_NANDF_D6__GPIO2_IO06		0x80000000		/*  PFID6 *	/
+				MX6QDL_PAD_NANDF_D7__GPIO2_IO07		0x80000000		/*  PFID7 *	/
+
+				MX6QDL_PAD_NANDF_CS3__GPIO6_IO16 	0x80000000		/*  PFID8 *	/
+				MX6QDL_PAD_NANDF_CS1__GPIO6_IO14 	0x00000010		/*  PFID9 *	/ /* PAD_CTL_DSE_120ohm  (2 << 3)*/
+				MX6QDL_PAD_NANDF_CS2__GPIO6_IO15 	0x80000000		/*  PFID10 */
+			>;
+			};
+	};
+
+	gpio_export{
+		pinctrl_gpio_export_gpio_fixed_in: pinctrl_gpio_grp-4 {
+			fsl,pins = <
+				MX6QDL_PAD_SD2_CLK__GPIO1_IO10				0x80000000		/*  CFS_01 */
+				MX6QDL_PAD_SD2_CMD__GPIO1_IO11				0x80000000		/*  CFS_02 */
+				MX6QDL_PAD_SD2_DAT3__GPIO1_IO12				0x80000000		/*  CFS_03 */
+				MX6QDL_PAD_SD2_DAT2__GPIO1_IO13				0x80000000		/*  CFS_04 */
+				MX6QDL_PAD_SD2_DAT1__GPIO1_IO14				0x80000000		/*  CFS_05 */
+				MX6QDL_PAD_SD2_DAT0__GPIO1_IO15				0x80000000		/*  CFS_06 */
+				MX6QDL_PAD_SD1_DAT0__GPIO1_IO16				0x00000010		/*  CFS_07 */ /* PAD_CTL_DSE_120ohm  (2 << 3)*/
+				MX6QDL_PAD_SD1_DAT1__GPIO1_IO17				0x00000010		/*  CFS_08 */ /* PAD_CTL_DSE_120ohm  (2 << 3)*/
+
+				MX6QDL_PAD_DI0_PIN3__GPIO4_IO19				0x80000000		/*  HMU_MODE */
+				MX6QDL_PAD_DISP0_DAT0__GPIO4_IO21 			0x80000000		/*  HMU_PWR_FAULT_B */
+
+				MX6QDL_PAD_DISP0_DAT1__GPIO4_IO22 			0x80000000		/*  GNSS1_1PPS */
+				MX6QDL_PAD_DISP0_DAT2__GPIO4_IO23 			0x80000000		/*  GNSS2_1PPS */
+				MX6QDL_PAD_DISP0_DAT3__GPIO4_IO24 			0x80000000		/*  DISCRETE_IN1 */
+				MX6QDL_PAD_DISP0_DAT4__GPIO4_IO25 			0x80000000		/*  DISCRETE_IN2 */
+				MX6QDL_PAD_DISP0_DAT5__GPIO4_IO26 			0x80000000		/*  GNSS1_PWR_OK */
+				MX6QDL_PAD_DISP0_DAT6__GPIO4_IO27 			0x80000000		/*  GNSS2_PWR_OK */
+				MX6QDL_PAD_DISP0_DAT7__GPIO4_IO28			0x80000000		/*  GNSS1_ANT_OK */
+				MX6QDL_PAD_DISP0_DAT9__GPIO4_IO30			0x80000000		/*  PFO_5P0 */
+
+				MX6QDL_PAD_DISP0_DAT11__GPIO5_IO05			0x80000000		/*  MAGN_PWR_OK */
+				MX6QDL_PAD_DISP0_DAT12__GPIO5_IO06			0x80000000		/*  GYRO_PWR_OK */
+				MX6QDL_PAD_DISP0_DAT13__GPIO5_IO07 			0x80000000		/*  SBX4_PWR_OK */
+				MX6QDL_PAD_DISP0_DAT14__GPIO5_IO08			0x80000000		/*  SBX4_ANT_OK */
+				MX6QDL_PAD_DISP0_DAT15__GPIO5_IO09			0x00000010		/*  MFG_ID *//* PAD_CTL_DSE_120ohm  (2 << 3)*/
+				MX6QDL_PAD_DISP0_DAT20__GPIO5_IO14			0x80000000		/*  ROT_5P0_OK */
+				MX6QDL_PAD_DISP0_DAT21__GPIO5_IO15			0x80000000		/*  ROT_12P0_OK */
+				MX6QDL_PAD_DISP0_DAT22__GPIO5_IO16			0x80000000		/*  ROT_12N0_OK */
+
+				MX6QDL_PAD_CSI0_DAT11__GPIO5_IO29			0x80000000		/*  SBX4_LOCK */
+
+				MX6QDL_PAD_DISP0_DAT10__GPIO4_IO31			0x80000000		/*  CLEAR_ALL */
+			>;
+			};
+		pinctrl_gpio_export_gpio_fixed_out: pinctrl_gpio_grp-5 {
+			fsl,pins = <
+				MX6QDL_PAD_DI0_DISP_CLK__GPIO4_IO16			0x00000800		/*  GNSS1_RESET_B *//* PAD_CTL_ODE  (1 << 11)*/
+				MX6QDL_PAD_DI0_PIN15__GPIO4_IO17			0x00000800		/*  GNSS2_RESET_B *//* PAD_CTL_ODE  (1 << 11)*/
+				MX6QDL_PAD_DI0_PIN2__GPIO4_IO18				0x80000000		/*  GYRO_RESET_B */
+
+				MX6QDL_PAD_DI0_PIN4__GPIO4_IO20				0x80000000		/*  HMU_PWR */
+
+				MX6QDL_PAD_CSI0_PIXCLK__GPIO5_IO18			0x80000000		/*  LED_UC1 */
+				MX6QDL_PAD_CSI0_MCLK__GPIO5_IO19			0x80000000		/*  LED_UC2 */
+				MX6QDL_PAD_CSI0_DATA_EN__GPIO5_IO20			0x80000000		/*  RELAY_HEADING_OK */
+				MX6QDL_PAD_CSI0_VSYNC__GPIO5_IO21			0x80000000		/*  RELAY_FAULT */
+				MX6QDL_PAD_CSI0_DAT4__GPIO5_IO22			0x80000000		/*  RELAY_SPARE1 */
+				MX6QDL_PAD_CSI0_DAT5__GPIO5_IO23			0x00000010		/*  RELAY_SPARE2 *//* PAD_CTL_DSE_120ohm  (2 << 3)*/
+				MX6QDL_PAD_CSI0_DAT6__GPIO5_IO24			0x80000000		/*  I2C3_TXLED_B */
+				MX6QDL_PAD_CSI0_DAT7__GPIO5_IO25			0x00000010		/*  I2C3_RXLED_B *//* PAD_CTL_DSE_120ohm  (2 << 3)*/
+				MX6QDL_PAD_CSI0_DAT10__GPIO5_IO28			0x80000000		/*  SBX4_RESET_B */
+
+			>;
+			};
+	};
+	ltc1655{
+		pinctrl_ltc1655: ltc1655-grp-1{
+			fsl,pins = <
+				MX6QDL_PAD_DISP0_DAT23__GPIO5_IO17			0x80000000		/*  ROT_EN */
+				>;
+		};
+	};
+
+	pcie{
+		pinctrl_pcie: pcie-1-grp-1{
+			fsl,pins = <
+				MX6QDL_PAD_GPIO_17__GPIO7_IO12				0x80000000		/*  PCI_RESET_B */
+				>;
+			};
+	};
+	rtc{
+		pinctrl_rtc: rtc-grp-1{
+			fsl,pins = <
+				MX6QDL_PAD_DISP0_DAT8__GPIO4_IO29   0x80000000         /*RTC INT*/
+				>;
+			};
+	};
+
+	usbh2 {
+		pinctrl_usbh2_3: usbh2grp-3 {
+			fsl,pins = <
+				MX6QDL_PAD_RGMII_TXC__USB_H2_DATA      0x00013038
+				MX6QDL_PAD_RGMII_TX_CTL__USB_H2_STROBE 0x00013038
+			>;
+		};
+		pinctrl_usbh2_active_3: usbh2_active_grp-3 {
+			fsl,pins = <
+				MX6QDL_PAD_RGMII_TXC__USB_H2_DATA      0x00013038
+				MX6QDL_PAD_RGMII_TX_CTL__USB_H2_STROBE 0x00017038
+			>;
+		};
+	};
+
+	ecspi1 {
+		pinctrl_ecspi1_3: ecspi1-grp-3 {
+			fsl,pins = <
+				MX6QDL_PAD_KEY_COL1__ECSPI1_MISO		0x80000000
+				MX6QDL_PAD_KEY_ROW0__ECSPI1_MOSI		0x80000000
+				MX6QDL_PAD_KEY_COL0__ECSPI1_SCLK		0x80000000
+				
+				/* chip selects muxed as GPIOs */
+				MX6QDL_PAD_KEY_ROW1__GPIO4_IO09			0x80000000
+				MX6QDL_PAD_KEY_COL2__GPIO4_IO10         0x80000000
+				MX6QDL_PAD_KEY_ROW2__GPIO4_IO11         0x80000000
+			>;
+		};
+	};
+
+	ecspi2 {
+		pinctrl_ecspi2_1: ecspi2-grp-1 {
+			fsl,pins = <
+				MX6QDL_PAD_DISP0_DAT16__ECSPI2_MOSI		0x80000000
+				MX6QDL_PAD_DISP0_DAT17__ECSPI2_MISO		0x80000000
+				MX6QDL_PAD_DISP0_DAT19__ECSPI2_SCLK		0x80000000
+				/* chip selects muxed as GPIOs */
+				MX6QDL_PAD_DISP0_DAT18__GPIO5_IO12		0x80000000
+			>;
+		};
+	};
+};
+
+&cpu0 {
+	operating-points = <
+		/* kHz    uV */
+		1200000 1275000
+		996000  1250000
+		852000  1250000
+		792000  1175000
+		396000   950000
+		>;
+	/* 400Mhz and 800MHz voltage adapted , because the pmic isn't reset on system reset, and the system does not comes up well with 1V, should later either have two dtb files or handled in the board file  */
+	fsl,soc-operating-points = <
+		/* ARM kHz  SOC-PU uV */
+		1200000       1275000
+		996000        1275000
+		852000        1275000
+		792000        1200000 /* There is a drop between soc in  and soc cap so I give it an extra 25mV */
+		396000        1200000
+		>;
+};
+
+/*==========================================================================================*/
+/*==========================================================================================*/
+/* Uncomment this to use clock out for debugging */
+/*&iomuxc {*/
+/*	pinctrl-names = "default";*/
+/*	pinctrl-0 = <&pinctrl_hog_1>;*/
+	/* System wide pin configs */
+/*	hog {*/
+/*		pinctrl_hog_1: hoggrp-1 {*/
+/*			fsl,pins = <*/
+				/* Clock out 12Mhz Ref */
+/*				MX6QDL_PAD_CSI0_MCLK__CCM_CLKO1		0x17059  *//* PAD_CTL_PKE | PAD_CTL_PUE | PAD_CTL_PUS_47K_UP | PAD_CTL_SPEED_LOW | PAD_CTL_DSE_80ohm | PAD_CTL_SRE_FAST | PAD_CTL_HYS */
+/*															 *//* (1 << 12)   | (1 << 13)   |(1 << 14)           | (1 << 6)          | (3 << 3)          |(1 << 0)          | (1 << 16)   */
+/*			>;*/
+/*		};*/
+/*	};*/
+/*};*/
+/* Addidtionally remove/comment out these lines above: */
+/* MX6QDL_PAD_CSI0_MCLK__GPIO5_IO19			0x80000000		*//*  LED_UC2 */
+/*	<&gpio5 19 2>,	*/	/*  LED_UC2 */
+/*==========================================================================================*/
+/*==========================================================================================*/
+
+/* LDO mode section */
+/* #include "imx6_guf_ldo_mode.dtsi"  */
+

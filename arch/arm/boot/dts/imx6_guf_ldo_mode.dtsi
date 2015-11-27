@@ -1,0 +1,31 @@
+
+/* enable LDO mode  */
+&cpu0 {
+	arm-supply = <&reg_arm>;
+	soc-supply = <&reg_soc>;
+	pu-supply = <&reg_pu>; /* use pu_dummy if VDDSOC share with VDDPU */
+};
+
+&gpc {
+	fsl,ldo-bypass = <0>; /* use ldo-bypass */
+	pu-supply = <&reg_pu>; /* ldo-bypass:use pu_dummy if VDDSOC share with VDDPU */
+};
+
+&gpu {
+	pu-supply = <&reg_pu>; /* ldo-bypass:use pu_dummy if VDDSOC share with VDDPU */
+};
+
+&vpu {
+	pu-supply = <&reg_pu>; /* ldo-bypass:use pu_dummy if VDDSOC share with VDDPU */
+};
+
+
+&pmic_sw1a_vddcore {
+	/* as the highest voltage of the ldo output is 1275 we need more on the input */
+	default-voltage = <1375000>;
+};
+
+&pmic_sw1c_vddsoc {
+	/* as the highest voltage of the ldo output is 1275 we need more on the input*/
+	default-voltage = <1375000>;
+};

@@ -1,0 +1,18 @@
+/*
+ * Copyright (C) 2015 Garz & Fricke GmbH
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License version 2 as
+ * published by the Free Software Foundation.
+ */
+
+/dts-v1/;
+
+#include "imx6_guf_q.dtsi"
+#include "imx6-santaro.dtsi"
+#include "imx6-santoka.dtsi"
+
+/ {
+	model = "SANTOKA";
+	compatible = "guf,imx6q-santoka", "fsl,imx6q";
+};

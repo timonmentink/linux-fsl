@@ -1,0 +1,12 @@
+#
+# DAC drivers
+#
+menu "Digital to analog converters"
+
+config AD5338
+	tristate "Analog Devices AD5338 ADC driver"
+	depends on I2C
+	help
+	  Say yes here to build support for Analog Devices AD5338
+	  DAC.
+endmenu

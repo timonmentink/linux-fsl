@@ -1,0 +1,25 @@
+/*
+ * Copyright (C) 2015 Garz & Fricke GmbH
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License version 2 as
+ * published by the Free Software Foundation.
+ */
+
+/dts-v1/;
+
+#include "imx6_guf_dl.dtsi"
+#include "imx6-santaro.dtsi"
+
+/ {
+	model = "SANTARO";
+	compatible = "guf,imx6dl-santaro", "fsl,imx6dl";
+};
+
+&tempmon{
+	cpu-type-gpio = <&gpio2 3 0>, <&gpio2 4 0>;
+	cpu-type-mapping = <0x2 0x3 0x1 0x0>;			/* Pattern for Consumer, Ext Consumer, Industrial, Automotive */
+	pinctrl-names = "default";
+	pinctrl-0 = <&pinctrl_pfid_3_4>;
+};
+
