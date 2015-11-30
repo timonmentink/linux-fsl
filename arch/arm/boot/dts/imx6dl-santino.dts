@@ -1,0 +1,151 @@
+/*
+ * Copyright (C) 2015 Garz & Fricke GmbH
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License version 2 as
+ * published by the Free Software Foundation.
+ */
+
+/dts-v1/;
+
+#include "imx6dl-guf.dtsi"
+#include "imx6dl-guf-santino-common.dtsi"
+
+/ {
+	model = "SANTINO";
+	compatible = "guf,imx6dl-santino", "fsl,imx6dl";
+
+	aliases {
+		serial0 = &uart2;
+		serial1 = &uart5;
+		serial2 = &uart1;
+		serial3 = &uart4;
+	};
+
+	regulators:regulators {
+		compatible = "simple-bus";
+
+		supply_5P0_can_rs485: can_rs485_supply {
+			compatible = "regulator-fixed";
+			regulator-name = "5P0_CAN_RS485";
+			regulator-min-microvolt = <5000000>;
+			regulator-max-microvolt = <5000000>;
+			gpio = <&gpio4 5 0>;
+			startup-delay-us = <300>;
+			enable-active-high;
+
+			vin-supply = <&supply_5P0>;
+			pinctrl-names = "default";
+			pinctrl-0 = <&pinctrl_5P0_can_1>;
+		};
+	};
+};
+
+&audmux {
+	pinctrl-names = "default";
+	pinctrl-0 = <&pinctrl_audmux_4>;
+	status = "okay";
+};
+
+&uart1 {
+	pinctrl-names = "default";
+	pinctrl-0 = <&pinctrl_uart1_2>;
+	status = "okay";
+
+	rs485-mode;
+	rs485-tx-enable-gpio = <&gpio7 8 0>;
+	rs485-supply = <&supply_5P0_can_rs485>;
+};
+
+&uart2 {
+	pinctrl-names = "default";
+	pinctrl-0 = <&pinctrl_uart2_2>;
+	status = "okay";
+};
+
+&uart4 {
+	pinctrl-names = "default";
+	pinctrl-0 = <&pinctrl_uart4_2>;
+	status = "okay";
+};
+
+&uart5 {
+	compatible = "fsl,imx-mdb-guf";
+	mdb-wakeup-gpio = <&gpio5 28 0>;
+
+	pinctrl-names = "default";
+	pinctrl-0 = <&pinctrl_uart5_rts_cts_hw1_2>;
+	status = "okay";
+};
+
+&usdhc2 {
+	wp-gpios = <&gpio1 2 0>;
+};
+
+&flexcan1 {
+	pinctrl-names = "default";
+	pinctrl-0 = <&pinctrl_flexcan1_3>;
+	status = "okay";
+	xceiver-supply = <&supply_5P0_can_rs485>;
+};
+
+&flexcan2 {
+	pinctrl-names = "default";
+	pinctrl-0 = <&pinctrl_flexcan2_1>;
+	status = "okay";
+	xceiver-supply = <&supply_5P0_can_rs485>;
+};
+
+&iomuxc {
+	5P0_can {
+		pinctrl_5P0_can_1: supply_5P0_cangrp-1 {
+			fsl,pins = <
+				MX6QDL_PAD_GPIO_19__GPIO4_IO05  0x40000008 /* SION + DSE=120 Ohm, 120 from 3.0.35 kernel, default (NO_PAD_CTL) wasn't working */
+			>;
+		};
+	};
+
+	gpio_export {
+		pinctrl_gpio_export_wlan_ctrl: pinctrl_gpio_wlan-1 {
+			fsl,pins = <
+				MX6QDL_PAD_EIM_D26__GPIO3_IO26			0x80000000		/*  WLAN RESET */
+				MX6QDL_PAD_EIM_D27__GPIO3_IO27			0x80000000		/*  WLAN_PD */
+			>;
+		};
+	};
+
+	lcdif {
+		pinctrl_lcdif_1: lcdifgrp-1 {
+			fsl,pins = <
+				MX6QDL_PAD_DI0_DISP_CLK__IPU1_DI0_DISP_CLK	0x80000000
+				MX6QDL_PAD_DI0_PIN15__LCD_ENABLE			0x80000000
+				MX6QDL_PAD_DI0_PIN2__LCD_HSYNC				0x80000000
+				MX6QDL_PAD_DI0_PIN3__LCD_VSYNC				0x80000000
+				MX6QDL_PAD_DISP0_DAT0__IPU1_DISP0_DATA00	0x80000000
+				MX6QDL_PAD_DISP0_DAT1__IPU1_DISP0_DATA01	0x80000000
+				MX6QDL_PAD_DISP0_DAT2__IPU1_DISP0_DATA02	0x80000000
+				MX6QDL_PAD_DISP0_DAT3__IPU1_DISP0_DATA03	0x80000000
+				MX6QDL_PAD_DISP0_DAT4__IPU1_DISP0_DATA04	0x80000000
+				MX6QDL_PAD_DISP0_DAT5__IPU1_DISP0_DATA05	0x80000000
+				MX6QDL_PAD_DISP0_DAT6__IPU1_DISP0_DATA06	0x80000000
+				MX6QDL_PAD_DISP0_DAT7__IPU1_DISP0_DATA07	0x80000000
+				MX6QDL_PAD_DISP0_DAT8__IPU1_DISP0_DATA08	0x80000000
+				MX6QDL_PAD_DISP0_DAT9__IPU1_DISP0_DATA09	0x80000000
+				MX6QDL_PAD_DISP0_DAT10__IPU1_DISP0_DATA10	0x80000000
+				MX6QDL_PAD_DISP0_DAT11__IPU1_DISP0_DATA11	0x80000000
+				MX6QDL_PAD_DISP0_DAT12__IPU1_DISP0_DATA12	0x80000000
+				MX6QDL_PAD_DISP0_DAT13__IPU1_DISP0_DATA13	0x80000000
+				MX6QDL_PAD_DISP0_DAT14__IPU1_DISP0_DATA14	0x80000000
+				MX6QDL_PAD_DISP0_DAT15__IPU1_DISP0_DATA15	0x80000000
+				MX6QDL_PAD_DISP0_DAT16__IPU1_DISP0_DATA16	0x80000000
+				MX6QDL_PAD_DISP0_DAT17__IPU1_DISP0_DATA17	0x80000000
+				MX6QDL_PAD_DISP0_DAT18__IPU1_DISP0_DATA18	0x80000000
+				MX6QDL_PAD_DISP0_DAT19__IPU1_DISP0_DATA19	0x80000000
+				MX6QDL_PAD_DISP0_DAT20__IPU1_DISP0_DATA20	0x80000000
+				MX6QDL_PAD_DISP0_DAT21__IPU1_DISP0_DATA21	0x80000000
+				MX6QDL_PAD_DISP0_DAT22__IPU1_DISP0_DATA22	0x80000000
+				MX6QDL_PAD_DISP0_DAT23__IPU1_DISP0_DATA23	0x80000000
+			>;
+		};
+	};
+};

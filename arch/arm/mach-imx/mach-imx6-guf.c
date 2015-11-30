@@ -51,11 +51,13 @@ extern void ram_to_file_reserve(void);
 
 
 #define COMPATIBLE_MACHINES \
-	MACHINE( "guf,imx6dl-santoka",	SANTOKA_X1_X2L,	MXC_CPU_IMX6DL, 0 ) \
-	MACHINE( "guf,imx6q-santoka",	SANTOKA_X2_X4,	MXC_CPU_IMX6Q,  0 ) \
-	MACHINE( "guf,imx6dl-santaro",	SANTARO_X1_X2L,	MXC_CPU_IMX6DL, 0 ) \
-	MACHINE( "guf,imx6q-santaro",	SANTARO_X2_X4,	MXC_CPU_IMX6Q,  0 ) \
-	MACHINE( "guf,imx6q-sdc-cspu",	SDC_CSPU,		MXC_CPU_IMX6Q,	0 ) \
+	MACHINE( "guf,imx6q-santaro",		SANTARO_X2_X4,	MXC_CPU_IMX6Q,  0 ) \
+	MACHINE( "guf,imx6q-santoka",		SANTOKA_X2_X4,	MXC_CPU_IMX6Q,  0 ) \
+	MACHINE( "guf,imx6q-sdc-cspu",		SDC_CSPU,		MXC_CPU_IMX6Q,	0 ) \
+	MACHINE( "guf,imx6dl-santaro",		SANTARO_X1_X2L,	MXC_CPU_IMX6DL, 0 ) \
+	MACHINE( "guf,imx6dl-santoka",		SANTOKA_X1_X2L,	MXC_CPU_IMX6DL, 0 ) \
+	MACHINE( "guf,imx6dl-santino",		SANTINO,		MXC_CPU_IMX6DL, 0 ) \
+	MACHINE( "guf,imx6dl-santino-lt",	SANTINO_LT,		MXC_CPU_IMX6DL, 0 ) \
 
 enum guf_imx6_board_revision {
 	V_UNKNOWN = -1,
@@ -67,6 +69,8 @@ enum guf_imx6_board_ids {
 	B_UNKNOWN = -1,
 	B_SANTARO,
 	B_SANTOKA,
+	B_SANTINO,
+	B_SANTINO_LT,
 	B_SDC_CSPU,
 };
 static enum guf_imx6_board_revision board_revision = V_UNKNOWN;
@@ -146,6 +150,8 @@ static void guf_imx6_get_board_and_revision(void)
 	switch (board_bitmask) {
 		case 0b111: board_id = B_SANTARO; printk("SANTARO"); break;
 		case 0b101: board_id = B_SANTOKA; printk("SANTOKA"); break;
+		case 0b100: board_id = B_SANTINO; printk("SANTINO"); break;
+		case 0b011: board_id = B_SANTINO_LT; printk("SANTINO LT"); break;
 		case 0b110: board_id = B_SDC_CSPU; printk("SDC-CSPU"); break;
 		default: printk("Unknown Board 0x%x", board_bitmask);
 	}

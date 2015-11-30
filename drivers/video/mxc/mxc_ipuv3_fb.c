@@ -712,7 +712,8 @@ static int mxcfb_set_par(struct fb_info *fbi)
 	if (ovfbi_enable)
 		ipu_enable_channel(mxc_fbi_fg->ipu, mxc_fbi_fg->ipu_ch);
 
-	if (mxc_fbi->dispdrv && mxc_fbi->dispdrv->drv->enable) {
+	if ( mxc_fbi->cur_blank == FB_BLANK_UNBLANK
+	  && mxc_fbi->dispdrv && mxc_fbi->dispdrv->drv->enable) {
 		retval = mxc_fbi->dispdrv->drv->enable(mxc_fbi->dispdrv);
 		if (retval < 0) {
 			dev_err(fbi->device, "enable error, dispdrv:%s.\n",
@@ -1431,6 +1432,7 @@ static int mxcfb_blank(int blank, struct fb_info *info)
 {
 	struct mxcfb_info *mxc_fbi = (struct mxcfb_info *)info->par;
 	int ret = 0;
+	int prevblank = 0;
 
 	dev_dbg(info->device, "%s blank = %d\n", __func__,blank);
 
@@ -1450,15 +1452,18 @@ static int mxcfb_blank(int blank, struct fb_info *info)
 		if (mxc_fbi->ipu_di >= 0)
 			ipu_uninit_sync_panel(mxc_fbi->ipu, mxc_fbi->ipu_di);
 		ipu_uninit_channel(mxc_fbi->ipu, mxc_fbi->ipu_ch);
+		mxc_fbi->cur_blank = blank;
 		break;
 	case FB_BLANK_UNBLANK:
 		info->var.activate = (info->var.activate & ~FB_ACTIVATE_MASK) |
 				FB_ACTIVATE_NOW | FB_ACTIVATE_FORCE;
+		prevblank = mxc_fbi->cur_blank;
+	   	mxc_fbi->cur_blank = blank;
 		ret = mxcfb_set_par(info);
+		if(ret)
+			mxc_fbi->cur_blank = prevblank;
 		break;
 	}
-	if (!ret)
-		mxc_fbi->cur_blank = blank;
 	return ret;
 }
 
@@ -2129,7 +2134,11 @@ static int mxcfb_register(struct fb_info *fbi)
 		fg_id[4] += mxcfbi->ipu_id;
 		strcpy(fbi->fix.id, fg_id);
 	}
-
+	
+	/* We have to set up bits_per_pixel here for the first time,
+	   otherwise, we it will be set to 16bpp always to user space
+	   in var info.*/
+	fbi->var.bits_per_pixel = mxcfbi->default_bpp;
 	mxcfb_check_var(&fbi->var, fbi);
 
 	mxcfb_set_fix(fbi);

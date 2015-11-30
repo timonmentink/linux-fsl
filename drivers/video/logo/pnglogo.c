@@ -627,14 +627,20 @@ static int fb_read_chunk_callback(png_structp png_ptr, png_unknown_chunkp chunk)
 {
 	row_info_t	*row_info_ptr = (row_info_t *)png_get_progressive_ptr(png_ptr);
 
-	pr_info("png_logo: logo license in PNG file provided\n");
+	/* check for a PNG file related license */
+	if (!memcmp(chunk->name, "igUf", 4) &&
+		(chunk->size == sizeof(unsigned int)) &&
+		!memcmp(chunk->data, &row_info_ptr->crc, sizeof(unsigned int))) {
+		pr_info("png_logo: logo license in PNG file provided\n");
 
-	png_set_progressive_read_fn(png_ptr, (png_voidp)row_info_ptr,
-		fb_info_callback, fb_row_callback, fb_end_callback);
+		png_set_progressive_read_fn(png_ptr, (png_voidp)row_info_ptr,
+			fb_info_callback, fb_row_callback, fb_end_callback);
 
-	license_type = LICENSE_EMBEDDED;
+		license_type = LICENSE_EMBEDDED;
 
-	return 1;
+		return 1;
+	}
+	return 0;
 }
 
 #ifdef DEBUG

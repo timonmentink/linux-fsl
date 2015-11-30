@@ -9,7 +9,7 @@
  */
 
 #include "imx6q-pinfunc.h"
-#include "imx6_guf_qdl.dtsi"
+#include "imx6qdl-guf.dtsi"
 
 / {
 

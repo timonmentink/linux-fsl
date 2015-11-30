@@ -179,6 +179,8 @@ typedef struct
 		TOUCH_TYPE( TOUCH_PIXCIR,		"PIXCIR",				"auo,auo_pixcir_ts" )\
 		TOUCH_TYPE( TOUCH_STMPE,		"STMPE",				"st,stmpe610" )\
 		TOUCH_TYPE( TOUCH_WM9705,		"WM9705",				"" )\
+		TOUCH_TYPE( TOUCH_SX8654,		"SX8654",				"semtech,sx8654" )\
+		TOUCH_TYPE( TOUCH_SIS_I2C,		"SIS I2C",				"sis,sisi2c" )\
 
 
 /* touch type */

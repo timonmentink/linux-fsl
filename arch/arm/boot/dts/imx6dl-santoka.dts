@@ -8,11 +8,10 @@
 
 /dts-v1/;
 
-#include "imx6_guf_q.dtsi"
-#include "imx6-santaro.dtsi"
+#include "imx6dl-guf.dtsi"
+#include "imx6qdl-guf-santoka.dtsi"
 
 / {
-	model = "SANTARO";
-	compatible = "guf,imx6q-santaro", "fsl,imx6q";
+	model = "SANTOKA";
+	compatible = "guf,imx6dl-santoka", "fsl,imx6dl";
 };
-
