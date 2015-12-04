@@ -1,4 +1,3 @@
-#include "imx6qdl-guf-santaro.dtsi"
 
 &tempmon{
 	cpu-type-gpio = <&gpio2 3 0>, <&gpio2 4 0>;

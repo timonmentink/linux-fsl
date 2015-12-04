@@ -856,38 +856,6 @@
 		};
 	};
 	
-	sx8654: sx8654@48 { /* This is a resitive touch for with its own touch controller */
-		compatible = "semtech,sx8654";
-		reg = <0x48>;
-		pinctrl-names = "default";
-		pinctrl-0 = <&pinctrl_ctouch>;
-
-		interrupts = <27 0x2>; /* In the gpio4 interupt controller pin 27 irq is used, 0x2 = high-to-low-edge*/
-		interrupt-parent = <&gpio4>;
-
-		reset-gpio = <&gpio1 20 0>;
-		irq-gpio = <&gpio4 27 0>;
-
-		status = "disabled";  /* will be enabled from the guf xml setting */
-	};
-
-	sisi2c: sisi2c@5c {
-		compatible = "sis,sisi2c";
-		reg = <0x5c>;
-
-		pinctrl-names = "default";
-		pinctrl-0 = <&pinctrl_ctouch>;
-
-		interrupts = <27 0x2>; /* In the gpio4 interupt controller pin 27 irq is used, 0x2 = high-to-low-edge*/
-		interrupt-parent = <&gpio4>;
-
-		reset-gpio = <&gpio1 20 0>;
-		irq-gpio = <&gpio4 27 0>;
-		wake-gpio = <&gpio1 18 0>;
-
-		status = "disabled";  /* will be enabled from the guf xml setting */
-	};
-
 	usb3503@08 {
 		compatible = "smsc,usb3503";
 		reg = <0x08>;
@@ -1362,4 +1330,4 @@
 };
 
 /* LDO mode section */
-/*#include "imx6qdl-guf-ldo-mode.dtsi" */
+/*#include "imx6_guf_ldo_mode.dtsi" */

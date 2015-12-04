@@ -8,8 +8,9 @@
 
 /dts-v1/;
 
-#include "imx6q-guf.dtsi"
-#include "imx6qdl-guf-santoka.dtsi"
+#include "imx6_guf_q.dtsi"
+#include "imx6-santaro.dtsi"
+#include "imx6-santoka.dtsi"
 
 / {
 	model = "SANTOKA";

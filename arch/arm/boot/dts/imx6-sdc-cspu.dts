@@ -8,7 +8,7 @@
 
 /dts-v1/;
 
-#include "imx6q-guf.dtsi"
+#include "imx6_guf_q.dtsi"
 
 / {
 	model = "SDC-CSPU";
@@ -840,5 +840,5 @@
 /*==========================================================================================*/
 
 /* LDO mode section */
-/* #include "imx6qdl-guf-ldo-mode.dtsi"  */
+/* #include "imx6_guf_ldo_mode.dtsi"  */
 

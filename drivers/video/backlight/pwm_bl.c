@@ -87,7 +87,7 @@ static int pwm_backlight_update_status(struct backlight_device *bl)
 		pr_debug("%s: pb->lth_brightness: %d\n",__func__, pb->lth_brightness);
 		pr_debug("%s: pb->period: %d\n",__func__, pb->period);
 		pr_debug("%s: max: %d\n",__func__, max);
-
+		
 		{
 			uint64_t temp = pb->period - pb->lth_brightness;
 			temp = temp * duty_cycle;
@@ -274,11 +274,7 @@ static int pwm_backlight_probe(struct platform_device *pdev)
 	}
 
 	if (data->levels) {
-		// Depening on whether the PWM-signal is normal or inverted we may have a
-		// LUT that either has maximum in first or in last entry of the table.
-		// (with inverted PWM-signal dim levels have high-values and bright levels
-		// have low values).
-		pb->max_level = data->max_level ? data->max_level : (max(data->levels[data->max_brightness], data->levels[0]));
+		pb->max_level = data->max_level ? data->max_level : data->levels[data->max_brightness];
 		max = pb->max_level;
 		pb->levels = data->levels;
 	} else

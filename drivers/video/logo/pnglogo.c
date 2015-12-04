@@ -634,7 +634,7 @@ static int fb_read_chunk_callback(png_structp png_ptr, png_unknown_chunkp chunk)
 
 	license_type = LICENSE_EMBEDDED;
 
-		return 1;
+	return 1;
 }
 
 #ifdef DEBUG

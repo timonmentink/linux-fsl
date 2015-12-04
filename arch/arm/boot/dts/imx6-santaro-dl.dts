@@ -8,8 +8,8 @@
 
 /dts-v1/;
 
-#include "imx6dl-guf.dtsi"
-#include "imx6qdl-guf-santaro.dtsi"
+#include "imx6_guf_dl.dtsi"
+#include "imx6-santaro.dtsi"
 
 / {
 	model = "SANTARO";

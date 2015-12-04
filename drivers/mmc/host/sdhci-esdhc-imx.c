@@ -591,17 +591,13 @@ static inline void esdhc_pltfm_set_clock(struct sdhci_host *host,
 	int pre_div = 2;
 	int div = 1;
 	u32 temp, val;
-	int timeout;
-
-	// According to the reference manual the ESDHC_VENDOR_SPEC_FRC_SDCLK_ON 
-	// should be cleared before any clock changes
-	if (esdhc_is_usdhc(imx_data)) {
-		val = readl(host->ioaddr + ESDHC_VENDOR_SPEC);
-		writel(val & ~ESDHC_VENDOR_SPEC_FRC_SDCLK_ON,
-			host->ioaddr + ESDHC_VENDOR_SPEC);
-	}
 
 	if (clock == 0) {
+		if (esdhc_is_usdhc(imx_data)) {
+			val = readl(host->ioaddr + ESDHC_VENDOR_SPEC);
+			writel(val & ~ESDHC_VENDOR_SPEC_FRC_SDCLK_ON,
+					host->ioaddr + ESDHC_VENDOR_SPEC);
+		}
 		goto out;
 	}
 
@@ -611,18 +607,14 @@ static inline void esdhc_pltfm_set_clock(struct sdhci_host *host,
 	temp = sdhci_readl(host, ESDHC_SYSTEM_CONTROL);
 	temp &= ~(ESDHC_CLOCK_IPGEN | ESDHC_CLOCK_HCKEN | ESDHC_CLOCK_PEREN
 		| ESDHC_CLOCK_MASK);
-
-	timeout = 50;
-	while( (! ( SDHCI_SD_CLK_STABLE & sdhci_readl(host, SDHCI_PRESENT_STATE)) )&& timeout--)
-		mdelay(1);
-	if(!timeout) dev_err(mmc_dev(host->mmc),	"Timeout while waiting for clock to stabilize!\n");
-
 	sdhci_writel(host, temp, ESDHC_SYSTEM_CONTROL);
+
 	while (host->max_clk / pre_div / 16 > clock && pre_div < 256)
 		pre_div *= 2;
 
 	while (host->max_clk / pre_div / div > clock && div < 16)
 		div++;
+
 	host->mmc->actual_clock = host->max_clk / pre_div / div;
 	dev_dbg(mmc_dev(host->mmc), "desired SD clock: %d, actual: %d\n",
 			clock, host->mmc->actual_clock);
@@ -637,12 +629,6 @@ static inline void esdhc_pltfm_set_clock(struct sdhci_host *host,
 	temp |= (ESDHC_CLOCK_IPGEN | ESDHC_CLOCK_HCKEN | ESDHC_CLOCK_PEREN
 		| (div << ESDHC_DIVIDER_SHIFT)
 		| (pre_div << ESDHC_PREDIV_SHIFT));
-
-	timeout = 50;
-	while( (! ( SDHCI_SD_CLK_STABLE & sdhci_readl(host, SDHCI_PRESENT_STATE)) )&& timeout--)
-		mdelay(1);
-	if(!timeout)dev_err(mmc_dev(host->mmc),	"Timeout while waiting for clock to stabilize!\n");
-
 	sdhci_writel(host, temp, ESDHC_SYSTEM_CONTROL);
 
 	if (esdhc_is_usdhc(imx_data)) {
